@@ -60,9 +60,28 @@ def compile(pofix):
 
     for c in pofix:
         if c == '.':
-
+            # Pop Nfa's off the stack, nfa1 = first on stack
+            nfa2 = nfaStack.pop() 
+            nfa1 = nfaStack.pop() 
+            # Connect first NFA's accept state to the second's initial.
+            nfa1.accept.edge1 = nfa2.initial
+            # Push NFA to the stack.
+            nfaStack.append(nfa(nfa1.initial, nfa2.accept))
         elif c == '|':
-
+            nfa2 = nfaStack.pop() 
+            nfa1 = nfaStack.pop()
+            # Create a new initial state, connect it to initial states
+            # of the two NFA's popped from the stack
+            initial = state()
+            initial.edge1 = nfa1.initial
+            initial.edge2 = nfa2.initial
+            # Create a new accept state, connecting the accept states
+            # of the two NFA's popped from the stack, to the new state.
+            accept = state()
+            nfa1.accept.edge1 = accept
+            nfa2.accept.edge1 = accept
+            # Push new NFA to the stack
+            nfaStack.append(nfa(initial, accept))
         elif c == '*':
 
         else:
@@ -75,4 +94,5 @@ def compile(pofix):
             # Push new NFA to the stack.
             nfaStack.append(nfa(initial, accept)) # combine states
     
+    # nfaStack should only have a single nfa on it at this point
     return nfaStack.pop()
