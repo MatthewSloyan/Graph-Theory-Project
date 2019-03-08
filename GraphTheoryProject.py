@@ -57,5 +57,22 @@ class nfa:
 
 def compile(pofix):
     nfaStack = []
-   
+
+    for c in pofix:
+        if c == '.':
+
+        elif c == '|':
+
+        elif c == '*':
+
+        else:
+            # Create new initial and accept states.
+            accept = state()
+            initial = state()
+            # Joing the initial state, the accept state using an arrow labelled c.
+            initial.label = c 
+            initial.edge1 = accept 
+            # Push new NFA to the stack.
+            nfaStack.append(nfa(initial, accept)) # combine states
+    
     return nfaStack.pop()
