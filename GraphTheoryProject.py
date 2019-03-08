@@ -34,3 +34,28 @@ def infixConversion(infix):
     return pofix
 
 print(infixConversion("(a.b)|(c*.d)"))
+
+# Thompson's contruction start
+# ===========================
+
+# Represents a state with two arrows, labelled by label.
+# Use None for a label representing 'e' arrows 
+class state: 
+    # None = no value as of now but will assign
+    label = None
+    edge1 = None
+    edge2 = None
+
+# An NFA is represented by it's initial and accept states
+class nfa:
+    initial = None
+    accept = None
+
+    def __init__(self, initial, accept):
+        self.initial = initial
+        self.accept = initial
+
+def compile(pofix):
+    nfaStack = []
+   
+    return nfaStack.pop()
