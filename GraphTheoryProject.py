@@ -1,8 +1,10 @@
 # Matthew Sloyan G00348036
 # https://github.com/MatthewSloyan/Graph-Theory-Project
-# Shunting Algorithm Test, will build upon for project
 
 def infixConversion(infix):
+    """Shunting Yard Algorithm implementation for converting infix 
+    regular expressions to postfix."""
+    
     # declare the special operands and their priority. This will be updated down the line to add +- etc.
     specials = {'*': 50, '.': 40, '|': 30}
 
@@ -10,6 +12,7 @@ def infixConversion(infix):
 
     # interate through each character in the infix string
     for c in infix:
+        # If and open bracket, push to the stack.
         if c == '(':
             stack = stack + c
         elif c == ')':
@@ -20,7 +23,7 @@ def infixConversion(infix):
             stack = stack[:-1]
         elif c in specials:
             # get(c, 0) = value in dictionary or return 0
-            # if priority is <= 
+            # push to stack if priority is lower or equal priority operators from top of stack into output.
             while stack and specials.get(c, 0) <= specials.get(stack[-1], 0):
                 pofix, stack = pofix + stack[-1], stack[:-1]
             stack = stack + c
@@ -35,8 +38,8 @@ def infixConversion(infix):
 
 print(infixConversion("(a.b)|(c*.d)"))
 
-# Thompson's contruction start
-# ===========================
+# Thompson's contruction 
+# ======================
 
 # Represents a state with two arrows, labelled by label.
 # Use None for a label representing 'e' arrows 
@@ -56,8 +59,13 @@ class nfa:
         self.accept = initial
 
 def compile(pofix):
+    """Thompson's contruction implementation for converting postfix regular expressions 
+    into an equivalent nondeterministic finite automaton (NFA)."""
+
+    #initalise stack
     nfaStack = []
 
+    # interate through each character in the postfix string
     for c in pofix:
         if c == '.':
             # Pop Nfa's off the stack, nfa1 = first on stack
