@@ -36,7 +36,7 @@ def infixConversion(infix):
         
     return pofix
 
-print(infixConversion("(a.b)|(c*.d)"))
+#print(infixConversion("(a.b)|(c*.d)"))
 
 # Thompson's contruction 
 # ======================
@@ -160,15 +160,26 @@ def match(infix, string):
 
     # Loop through each character in the postfix string
     for s in string:
+        #print("Hello " + s)
         # Loop through current set of states.
         for c in current:
             # Check if that state is labelled s.
+            #print("Thanks " + c.label)
             if c.label == s:
+                #print(c.label)
                 # Add the edge 1 state to the next set.
                 nextState |= followEs(c.edge1)
         # Set current to next, and clear out next.
         current = nextState
         nextState = set()
-
+    
     # Check if the accept state is in the set of current states.
     return(nfa.accept in current)
+
+# Test match function
+infixes = ["a.b.c*", "a.(b|d).c*", "(a.(b|d))*", "a.(b.b)*.c"]
+strings = ["", "abc", "abbc", "abcc", "abad", "abbbc"]
+
+for i in infixes:
+    for s in strings:
+        print(match(i, s), i, s)
