@@ -120,6 +120,23 @@ def compile(pofix):
 #print(compile("ab.cd.|"))
 #print(compile("aa.*"))
 
+def followEs(state):
+    """# Helper function, which returns set of states that can 
+    be reached from the state following e arrows."""
+    # Create a new set, with state as it's only member.
+    states = set()
+    set.add(state)
+
+    # Check if state has arrows labelled e from it. (# If state = None, then e arrow)
+    if state.label is None:
+        # If there's an edge1, follow it and use recursion. | = union
+        states |= followEs(state.edge1)
+        # If there's an edge2, follow it.
+        states |= followEs(state.edge2)
+        
+    # Return the set of states.
+    return states
+
 def match(infix, string):
     """# Shunt and compile the infix regular expression using both 
     Shunting Yard Algorithm and Thompson's contruction functions."""
