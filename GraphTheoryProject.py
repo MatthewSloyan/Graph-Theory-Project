@@ -128,12 +128,13 @@ def followEs(state):
     set.add(state)
 
     # Check if state has arrows labelled e from it. (# If state = None, then e arrow)
+    # Keep following e arrows as long as you can.
     if state.label is None:
         # If there's an edge1, follow it and use recursion. | = union
         states |= followEs(state.edge1)
         # If there's an edge2, follow it.
         states |= followEs(state.edge2)
-        
+
     # Return the set of states.
     return states
 
@@ -151,4 +152,13 @@ def match(infix, string):
 
     # Loop through each character in the postfix string
     for s in string:
-        #Do something
+        # Loop through current set of states.
+        for c in current:
+            # Check if that state is labelled s.
+            nextState |= followEs(c.edge1)
+        # Set current to next, and clear out next.
+        current = nextState
+        nextState = set()
+
+    # Check if the accept state is in the set of current states.
+    return(nfa.accept in current)
