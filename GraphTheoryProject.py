@@ -117,5 +117,21 @@ def compile(pofix):
     # nfaStack should only have a single nfa on it at this point
     return nfaStack.pop()
 
-print(compile("ab.cd.|"))
-print(compile("aa.*"))
+#print(compile("ab.cd.|"))
+#print(compile("aa.*"))
+
+def match(infix, string):
+    """# Shunt and compile the infix regular expression using both 
+    Shunting Yard Algorithm and Thompson's contruction functions."""
+
+    postfix = infixConversion(infix)
+    nfa = compile(postfix)
+
+    # The current set of states and the next set of states. Sets are like lists, 
+    # however can only contain unique values
+    current = set()
+    nextState = set()
+
+    # Loop through each character in the postfix string
+    for s in string:
+        #Do something
