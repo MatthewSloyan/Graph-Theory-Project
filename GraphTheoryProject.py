@@ -56,7 +56,7 @@ class nfa:
 
     def __init__(self, initial, accept):
         self.initial = initial
-        self.accept = initial
+        self.accept = accept
 
 def compile(pofix):
     """Thompson's contruction implementation for converting postfix regular expressions 
@@ -160,11 +160,9 @@ def match(infix, string):
 
     # Loop through each character in the postfix string
     for s in string:
-        #print("Hello " + s)
         # Loop through current set of states.
         for c in current:
             # Check if that state is labelled s.
-            #print("Thanks " + c.label)
             if c.label == s:
                 #print(c.label)
                 # Add the edge 1 state to the next set.
@@ -177,8 +175,8 @@ def match(infix, string):
     return(nfa.accept in current)
 
 # Test match function
-infixes = ["a.b.c*", "a.(b|d).c*", "(a.(b|d))*", "a.(b.b)*.c"]
-strings = ["", "abc", "abbc", "abcc", "abad", "abbbc"]
+infixes = ["1.2.3*", "a.(b|d).c*", "(a.(b|d))*", "a.(b.b)*.c"]
+strings = ["", "1233", "abbc", "abcc", "abad", "abbbc"]
 
 for i in infixes:
     for s in strings:
