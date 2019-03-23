@@ -105,7 +105,7 @@ def compile(pofix):
             #push new NFA to the stack.
             nfaStack.append(nfa(initial, accept))
         elif c == '?':
-            # Pop single NFA from the stack which will be the one
+            # Pop single NFA from the stack which will be the one in "Zero or one"
             nfa1 = nfaStack.pop() 
             # Create new intial and accepts states.
             initial = state()
@@ -117,6 +117,16 @@ def compile(pofix):
             nfa1.accept.edge1 = accept
             # Push new NFA to the stack.
             nfaStack.append(nfa(initial, accept))
+        if c == '+':
+            # Pop single NFA from the stack
+            nfa1 = nfaStack.pop() 
+
+            accept = state()
+            # Connect first NFA's accept state to the second's initial.
+            nfa1.accept.edge1 = accept
+
+            # Push NFA to the stack.
+            nfaStack.append(nfa(nfa1.initial, accept))
         else:
             # Create new initial and accept states.
             accept = state()
@@ -129,9 +139,6 @@ def compile(pofix):
     
     # nfaStack should only have a single nfa on it at this point
     return nfaStack.pop()
-
-#print(compile("ab.cd.|"))
-#print(compile("aa.*"))
 
 def followEs(state):
     """# Helper function, which returns set of states that can 
