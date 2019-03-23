@@ -113,6 +113,10 @@ def compile(pofix):
             # Connect inital state to nfa initial, and connnect other edge to accept state
             initial.edge1 = nfa1.initial
             initial.edge2 = accept
+            # Join nfa accept to accept state to complete
+            nfa1.accept.edge1 = accept
+            # Push new NFA to the stack.
+            nfaStack.append(nfa(initial, accept))
         else:
             # Create new initial and accept states.
             accept = state()
