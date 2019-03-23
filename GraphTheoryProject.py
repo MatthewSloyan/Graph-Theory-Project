@@ -6,7 +6,7 @@ def infixConversion(infix):
     regular expressions to postfix."""
     
     # declare the special operands and their priority. This will be updated down the line to add +- etc.
-    specials = {'*': 50, '.': 40, '|': 30}
+    specials = {'*': 50, '+': 50, '?': 50, '.': 40, '|': 30}
 
     pofix, stack = "", ""
 
@@ -36,7 +36,7 @@ def infixConversion(infix):
         
     return pofix
 
-#print(infixConversion("(a.b)|(c*.d)"))
+print(infixConversion("1|0"))
 
 # Thompson's contruction 
 # ======================
@@ -104,6 +104,15 @@ def compile(pofix):
             nfa1.accept.edge2 = accept
             #push new NFA to the stack.
             nfaStack.append(nfa(initial, accept))
+        elif c == '?':
+            # Pop single NFA from the stack which will be the one
+            nfa1 = nfaStack.pop() 
+            # Create new intial and accepts states.
+            initial = state()
+            accept = state()
+            # Connect inital state to nfa initial, and connnect other edge to accept state
+            initial.edge1 = nfa1.initial
+            initial.edge2 = accept
         else:
             # Create new initial and accept states.
             accept = state()
