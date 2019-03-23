@@ -188,8 +188,8 @@ def match(infix, string):
     return(nfa.accept in current)
 
 # Test match function
-infixes = ["1.2.3*", "a.(b|d).c*", "(a.(b|d))*", "a.(b.b)*.c"]
-strings = ["", "1233", "abbc", "abcc", "abad", "abbbc"]
+infixes = ["a.b.c*", "a.(b|d).c*", "(a.(b|d))*", "a.(b.b)*.c", "a.b.c?"]
+strings = ["", "abc", "abbc", "abcc", "abad", "abbbc", "ab"]
 
 for i in infixes:
     for s in strings:
