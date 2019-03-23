@@ -117,16 +117,19 @@ def compile(pofix):
             nfa1.accept.edge1 = accept
             # Push new NFA to the stack.
             nfaStack.append(nfa(initial, accept))
-        if c == '+':
+        elif c == '+':
             # Pop single NFA from the stack
             nfa1 = nfaStack.pop() 
-
+            # Create new intial and accepts states.
+            initial = state()
             accept = state()
-            # Connect first NFA's accept state to the second's initial.
-            nfa1.accept.edge1 = accept
-
+            # Connect inital state to nfa initial
+            initial.edge1 = nfa1.initial
+            # Join one edge back to inital to create a loop, and other to accept
+            nfa1.accept.edge1 = nfa1.initial
+            nfa1.accept.edge2 = accept
             # Push NFA to the stack.
-            nfaStack.append(nfa(nfa1.initial, accept))
+            nfaStack.append(nfa(initial, accept))
         else:
             # Create new initial and accept states.
             accept = state()
