@@ -35,4 +35,5 @@ After I began to implement the + operator which works similar to the ? operator 
 * https://en.wikipedia.org/wiki/Nondeterministic_finite_automaton
 * http://www.oxfordmathcenter.com/drupal7/node/628
 * https://swtch.com/~rsc/regexp/regexp1.html
+* http://www.boost.org/doc/libs/1_56_0/libs/regex/doc/html/boost_regex/syntax/basic_extended.html#boost_regex.syntax.basic_extended.operator_precedence
 * https://www.gnu.org/software/gcal/manual/html_node/Regexp-Operators.html

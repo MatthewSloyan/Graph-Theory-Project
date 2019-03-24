@@ -36,8 +36,6 @@ def infixConversion(infix):
         
     return pofix
 
-print(infixConversion("1|0"))
-
 # Thompson's contruction 
 # ======================
 
@@ -45,14 +43,11 @@ print(infixConversion("1|0"))
 # Use None for a label representing 'e' arrows 
 class state: 
     # None = no value as of now but will assign
-    label = None
-    edge1 = None
-    edge2 = None
+    label, edge1, edge2 = None, None, None
 
 # An NFA is represented by it's initial and accept states
 class nfa:
-    initial = None
-    accept = None
+    initial, accept = None, None
 
     def __init__(self, initial, accept):
         self.initial = initial
@@ -62,57 +57,47 @@ def compile(pofix):
     """Thompson's contruction implementation for converting postfix regular expressions 
     into an equivalent nondeterministic finite automaton (NFA)."""
 
-    #initalise stack
+    #initalise the stack
     nfaStack = []
 
     # interate through each character in the postfix string
     for c in pofix:
         if c == '.':
             # Pop Nfa's off the stack, nfa1 = first on stack
-            nfa2 = nfaStack.pop() 
-            nfa1 = nfaStack.pop() 
+            nfa2, nfa1 = nfaStack.pop(), nfaStack.pop()
             # Connect first NFA's accept state to the second's initial.
             nfa1.accept.edge1 = nfa2.initial
             # Push NFA to the stack.
             nfaStack.append(nfa(nfa1.initial, nfa2.accept))
         elif c == '|':
-            nfa2 = nfaStack.pop() 
-            nfa1 = nfaStack.pop()
+            nfa2, nfa1 = nfaStack.pop(), nfaStack.pop()
             # Create a new initial state, connect it to initial states
             # of the two NFA's popped from the stack
-            initial = state()
-            initial.edge1 = nfa1.initial
-            initial.edge2 = nfa2.initial
+            initial, accept = state(), state()
+            initial.edge1, initial.edge2 = nfa1.initial, nfa2.initial
             # Create a new accept state, connecting the accept states
             # of the two NFA's popped from the stack, to the new state.
-            accept = state()
-            nfa1.accept.edge1 = accept
-            nfa2.accept.edge1 = accept
+            nfa1.accept.edge1, nfa2.accept.edge1 = accept, accept
             # Push new NFA to the stack
             nfaStack.append(nfa(initial, accept))
         elif c == '*':
             # Pop single NFA from the stack
             nfa1 = nfaStack.pop() 
             # Create new intial and accepts states.
-            initial = state()
-            accept = state()
+            initial, accept = state(), state()
             # Join the new intial state to nfa1's initial state and the new accept state.
-            initial.edge1 = nfa1.initial
-            initial.edge2 = accept
+            initial.edge1, initial.edge2 = nfa1.initial, accept
             #join the old accept state to the new accept state and nfa1's initial state
-            nfa1.accept.edge1 = nfa1.initial
-            nfa1.accept.edge2 = accept
+            nfa1.accept.edge1, nfa1.accept.edge2 = nfa1.initial, accept
             #push new NFA to the stack.
             nfaStack.append(nfa(initial, accept))
         elif c == '?':
             # Pop single NFA from the stack which will be the one in "Zero or one"
             nfa1 = nfaStack.pop() 
             # Create new intial and accepts states.
-            initial = state()
-            accept = state()
+            initial, accept = state(), state()
             # Connect inital state to nfa initial, and connnect other edge to accept state
-            initial.edge1 = nfa1.initial
-            initial.edge2 = accept
+            initial.edge1, initial.edge2 = nfa1.initial, accept
             # Join nfa accept to accept state to complete
             nfa1.accept.edge1 = accept
             # Push new NFA to the stack.
@@ -121,25 +106,21 @@ def compile(pofix):
             # Pop single NFA from the stack
             nfa1 = nfaStack.pop() 
             # Create new intial and accepts states.
-            initial = state()
-            accept = state()
+            initial, accept = state(), state()
             # Connect inital state to nfa initial
             initial.edge1 = nfa1.initial
             # Join one edge back to inital to create a loop, and other to accept
-            nfa1.accept.edge1 = nfa1.initial
-            nfa1.accept.edge2 = accept
+            nfa1.accept.edge1, nfa1.accept.edge2 = nfa1.initial, accept
             # Push NFA to the stack.
             nfaStack.append(nfa(initial, accept))
         else:
             # Create new initial and accept states.
-            accept = state()
-            initial = state()
+            initial, accept = state(), state()
             # Joing the initial state, the accept state using an arrow labelled c.
-            initial.label = c 
-            initial.edge1 = accept 
+            initial.label, initial.edge1 = c, accept
             # Push new NFA to the stack.
             nfaStack.append(nfa(initial, accept)) # combine states
-    
+
     # nfaStack should only have a single nfa on it at this point
     return nfaStack.pop()
 
@@ -161,7 +142,6 @@ def followEs(state):
         if state.edge2 is not None:
             # If there's an edge2, follow it.
             states |= followEs(state.edge2)
-
     # Return the set of states.
     return states
 
@@ -175,8 +155,7 @@ def match(infix, string):
 
     # The current set of states and the next set of states. Sets are like lists, 
     # however can only contain unique values
-    current = set()
-    nextState = set()
+    current, nextState = set(), set()
 
     # Add the initial state to the current set.
     current |= followEs(nfa.initial)
@@ -191,9 +170,7 @@ def match(infix, string):
                 # Add the edge 1 state to the next set.
                 nextState |= followEs(c.edge1)
         # Set current to next, and clear out next.
-        current = nextState
-        nextState = set()
-    
+        current, nextState = nextState, set()
     # Check if the accept state is in the set of current states.
     return(nfa.accept in current)
 
@@ -201,6 +178,8 @@ def match(infix, string):
 infixes = ["a.b.c*", "a.(b|d).c*", "(a.(b|d))*", "a.(b.b)*.c", "a.b.c?", "a.b.c+"]
 strings = ["", "abc", "abbc", "abcc", "abad", "abbbc", "ab"]
 
+print("\nRESULTS\n=======")
 for i in infixes:
+    print()
     for s in strings:
-        print(match(i, s), i, s)
+        print("Infix: %-17s String: %-17s Result: %-5s" % (i, s,  match(i, s)))
