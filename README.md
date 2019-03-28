@@ -49,6 +49,19 @@ For the last week of the project I decided to work on finalising the project, fi
 * If neither of the above add the character to the postfix output, E.g. the character “a”.
 * After, remove additional characters from the stack and return completed postfix string.
 
+### Thompsons construction algorithm implementation (compile function)
+* It starts by iterating through the passed in postfix expression.
+* It then checks for each operator (* + ? . |) and creates a small NFA to add to the overall NFA stack. These work by setting up initial and accepts states using the NFA class and constructor. Below is a quick description how each operator works.
+#### Concatenation operator ‘.’
+Pop both NFA’s from the stack to concatenate and set the first NFA accept state to the second NFA initial state to connect them up.
+#### Or operator ‘|’ 
+Pop both NFA’s from the stack and create a new initial and accept state. Set edge one for the new initial state to the initial state of NFA one. Set the second edge to the initial state of NFA two. Connect the accept state of both NFA one and two to the new accept state created to finish and append to the stack.
+#### Kleene Star Operator (Zero or more)
+Pop one NFA’s from the stack and create a new initial and accept state. Set edge one for the new initial state to the initial state of the NFA. Set the second edge to the new accept state (Zero option). Set edge one of the accept state in the NFA back to the initial state of the NFA to loop back on itself. Set the second edge to the accept state to complete and append to stack.
+#### ? Operator (Zero or one)
+Pop one NFA’s from the stack and create a new initial and accept state. Set edge one for the new initial state to the initial state of the NFA. Set the second edge to the new accept state (Zero option). Set edge one of the accept state in the NFA to the final accept state (One option). 
+#### + Operator (One or more)
+Pop one NFA’s from the stack and create a new initial and accept state. Set edge one of the new initial state to the initial state of the NFA. Set edge one for the new initial state to the initial state of the NFA. Set edge one of the accept state in the NFA back to the initial state of the NFA looping it back on itself. (Or more option). Set edge two of the accept state in the NFA to the final accept state (One option). 
 
 # References
 * https://en.wikipedia.org/wiki/Nondeterministic_finite_automaton
