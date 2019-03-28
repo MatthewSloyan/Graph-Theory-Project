@@ -158,6 +158,7 @@ def match(infix, string):
     current, nextState = set(), set()
 
     # Add the initial state to the current set.
+    # When used with sets |= is union
     current |= followEs(nfa.initial)
 
     # Loop through each character in the postfix string
@@ -174,12 +175,32 @@ def match(infix, string):
     # Check if the accept state is in the set of current states.
     return(nfa.accept in current)
 
-# Test match function
-infixes = ["a.b.c*", "a.(b|d).c*", "(a.(b|d))*", "a.(b.b)*.c", "a.b.c?", "a.b.c+"]
-strings = ["", "abc", "abbc", "abcc", "abad", "abbbc", "ab", "abcccc"]
+# Print out a list of predefined comparsions to test match function
+def printPredefinedResults():
+    infixes = ["a.b.c*", "a.(b|d).c*", "(a.(b|d))*", "a.(b.b)*.c", "a.b.c?", "a.b.c+"]
+    strings = ["", "abc", "abbc", "abcc", "abad", "abbbc", "ab"]
 
-print("\nRESULTS\n=======")
-for i in infixes:
-    print()
-    for s in strings:
-        print("Infix: %-17s String: %-17s Result: %-5s" % (i, s,  match(i, s)))
+    print("\nRESULTS\n=======")
+    for i in infixes:
+        print()
+        for s in strings:
+            print("Infix: %-17s String: %-17s Result: %-5s" % (i, s,  match(i, s)))
+
+# Compare a list of user regular expressions infix notation to strings entered.
+# def UserEntries():
+
+userAnswer=True
+while userAnswer:
+    print("1.Print predefined comparisons\n2.Enter your own infix expressions and strings\n3.Read from file")
+    userAnswer=input("Please enter a option?")
+    if userAnswer=="1":
+        printPredefinedResults()
+    elif userAnswer=="2":
+        print("\nInput") 
+    elif userAnswer=="3":
+        print("\nFile") 
+    elif userAnswer=="4":
+        print("\nGoodbye") 
+        userAnswer = None
+    else:
+        print("\nNot Valid Choice Try again")
