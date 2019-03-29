@@ -179,27 +179,39 @@ def match(infix, string):
 def printPredefinedResults():
     infixes = ["a.b.c*", "a.(b|d).c*", "(a.(b|d))*", "a.(b.b)*.c", "a.b.c?", "a.b.c+"]
     strings = ["", "abc", "abbc", "abcc", "abad", "abbbc", "ab"]
+    printResults(infixes, strings)
 
+# Compare a list of user regular expressions infix notation to strings entered.
+def UserEntries():
+    # Take in user input and split each string at a space and add to a list
+    infixEntry = list(input("Please enter a list or single infix expression: ").split()) 
+    print("Entered list of infix expresions: ", infixEntry) 
+
+    stringEntry = list(input("Please enter a list or single string: ").split()) 
+    print("Entered list of strings: ", stringEntry) 
+
+    printResults(infixEntry, stringEntry)
+
+# Takes in a list of infix expresions and strings and mathches them using the match function
+def printResults(infixes, strings):
     print("\nRESULTS\n=======")
     for i in infixes:
         print()
         for s in strings:
             print("Infix: %-17s String: %-17s Result: %-5s" % (i, s,  match(i, s)))
 
-# Compare a list of user regular expressions infix notation to strings entered.
-# def UserEntries():
-
 userAnswer=True
 while userAnswer:
-    print("1.Print predefined comparisons\n2.Enter your own infix expressions and strings\n3.Read from file")
-    userAnswer=input("Please enter a option?")
-    if userAnswer=="1":
+    print("\n1: Print predefined comparisons\n2: Enter infix expressions and strings\n3: Read from file")
+    userAnswer = input("Please enter a option: ")
+    # If entry is one print out sample of infix & string comparisions
+    if userAnswer == "1":
         printPredefinedResults()
-    elif userAnswer=="2":
-        print("\nInput") 
-    elif userAnswer=="3":
+    elif userAnswer == "2":
+        UserEntries()
+    elif userAnswer == "3":
         print("\nFile") 
-    elif userAnswer=="4":
+    elif userAnswer == "4":
         print("\nGoodbye") 
         userAnswer = None
     else:
