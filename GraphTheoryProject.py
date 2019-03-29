@@ -1,7 +1,7 @@
 # Matthew Sloyan G00348036
 # https://github.com/MatthewSloyan/Graph-Theory-Project
 
-def infixConversion(infix):
+def infix_conversion(infix):
     """Shunting Yard Algorithm implementation for converting infix 
     regular expressions to postfix."""
     
@@ -124,7 +124,7 @@ def compile(pofix):
     # nfaStack should only have a single nfa on it at this point
     return nfaStack.pop()
 
-def followEs(state):
+def followes(state):
     """# Helper function, which returns set of states that can 
     be reached from the state following e arrows."""
     # Create a new set, with state as it's only member.
@@ -137,11 +137,11 @@ def followEs(state):
         # Check if edge1 is a state.
         if state.edge1 is not None:
             # If there's an edge1, follow it and use recursion. | = union
-            states |= followEs(state.edge1)
+            states |= followes(state.edge1)
         # Check if edge2 is a state.
         if state.edge2 is not None:
             # If there's an edge2, follow it.
-            states |= followEs(state.edge2)
+            states |= followes(state.edge2)
     # Return the set of states.
     return states
 
@@ -149,7 +149,7 @@ def match(infix, string):
     """# Shunt and compile the infix regular expression using both 
     Shunting Yard Algorithm and Thompson's contruction functions."""
 
-    postfix = infixConversion(infix)
+    postfix = infix_conversion(infix)
     # Creates nfa from postfix
     nfa = compile(postfix)
 
@@ -159,7 +159,7 @@ def match(infix, string):
 
     # Add the initial state to the current set.
     # When used with sets |= is union
-    current |= followEs(nfa.initial)
+    current |= followes(nfa.initial)
 
     # Loop through each character in the postfix string
     for s in string:
@@ -169,7 +169,7 @@ def match(infix, string):
             if c.label == s:
                 #print(c.label)
                 # Add the edge 1 state to the next set.
-                nextState |= followEs(c.edge1)
+                nextState |= followes(c.edge1)
         # Set current to next, and clear out next.
         current, nextState = nextState, set()
     # Check if the accept state is in the set of current states.
@@ -179,63 +179,58 @@ def match(infix, string):
 # =====================
 
 # Print out a list of predefined comparsions to test match function
-def printPredefinedResults():
+def print_predefined():
     infixes = ["a.b.c*", "a.(b|d).c*", "(a.(b|d))*", "a.(b.b)*.c", "a.b.c?", "a.b.c+"]
     strings = ["", "abc", "abbc", "abcc", "abad", "abbbc", "ab"]
-    printResults(infixes, strings)
+    print_results(infixes, strings)
 
 # Compare a list of user regular expressions infix notation to strings entered.
-def UserEntries():
+def user_entry():
     # Take in user input and split each string at a space and add to a list
     infixEntry = list(input("Please enter a list or single infix expression: ").split()) 
-    print("Entered list of infix expressions: ", infixEntry) 
-
     stringEntry = list(input("Please enter a list or single string: ").split()) 
-    print("Entered list of strings: ", stringEntry) 
-
-    printResults(infixEntry, stringEntry)
+    print_results(infixEntry, stringEntry)
 
 # Read in file for both infixes expresions strings and print results
-def FileResults():
-    # 
+def file_entry():
+    # Allow the user to enter the file path and read file
     filePath = input("Please enter the file path including file name and extension for infixes: ")
     try:
-        fileInfixEntry = [line.rstrip('\n') for line in open(filePath, "r")]
-        print("List of infix expresions from file: ", fileInfixEntry) 
+        fileInfixList = open(filePath, "r").read().splitlines()
     except FileNotFoundError:
         print("\nFile not found, please try again!")
         return
-
+        
     filePath = input("Please enter the file path including file name and extension for strings: ")
     try:
-        fileStringEntry = [line.rstrip('\n') for line in open(filePath, "r")]
-        print("List of strings from file: ", fileStringEntry) 
+        fileStringlist = open(filePath, "r").read().splitlines()
     except FileNotFoundError:
         print("\nFile not found, please try again!")
         return
 
     # Print results from both files
-    printResults(fileInfixEntry, fileStringEntry)
+    print_results(fileInfixList, fileStringlist)
 
 # Takes in a list of infix expresions and strings and mathches them using the match function
-def printResults(infixes, strings):
+def print_results(infixes, strings):
     print("\nRESULTS\n=======")
     for i in infixes:
         print()
         for s in strings:
             print("Infix: %-17s String: %-17s Result: %-5s" % (i, s,  match(i, s)))
 
+# User menu 
 userAnswer=True
 while userAnswer:
     print("\n1: Print predefined comparisons\n2: Enter infix expressions and strings\n3: Read from file\n4: Exit")
     userAnswer = input("Please enter a option: ")
     # If entry is one print out sample of infix & string comparisions
     if userAnswer == "1":
-        printPredefinedResults()
+        print_predefined()
     elif userAnswer == "2":
-        UserEntries()
+        user_entry()
     elif userAnswer == "3":
-        FileResults()
+        file_entry()
     elif userAnswer == "4":
         print("\nGoodbye") 
         userAnswer = None
