@@ -175,6 +175,9 @@ def match(infix, string):
     # Check if the accept state is in the set of current states.
     return(nfa.accept in current)
 
+# User functions and UI
+# =====================
+
 # Print out a list of predefined comparsions to test match function
 def printPredefinedResults():
     infixes = ["a.b.c*", "a.(b|d).c*", "(a.(b|d))*", "a.(b.b)*.c", "a.b.c?", "a.b.c+"]
@@ -185,12 +188,34 @@ def printPredefinedResults():
 def UserEntries():
     # Take in user input and split each string at a space and add to a list
     infixEntry = list(input("Please enter a list or single infix expression: ").split()) 
-    print("Entered list of infix expresions: ", infixEntry) 
+    print("Entered list of infix expressions: ", infixEntry) 
 
     stringEntry = list(input("Please enter a list or single string: ").split()) 
     print("Entered list of strings: ", stringEntry) 
 
     printResults(infixEntry, stringEntry)
+
+# Read in file for both infixes expresions strings and print results
+def FileResults():
+    # 
+    filePath = input("Please enter the file path including file name and extension for infixes: ")
+    try:
+        fileInfixEntry = [line.rstrip('\n') for line in open(filePath, "r")]
+        print("List of infix expresions from file: ", fileInfixEntry) 
+    except FileNotFoundError:
+        print("\nFile not found, please try again!")
+        return
+
+    filePath = input("Please enter the file path including file name and extension for strings: ")
+    try:
+        fileStringEntry = [line.rstrip('\n') for line in open(filePath, "r")]
+        print("List of strings from file: ", fileStringEntry) 
+    except FileNotFoundError:
+        print("\nFile not found, please try again!")
+        return
+
+    # Print results from both files
+    printResults(fileInfixEntry, fileStringEntry)
 
 # Takes in a list of infix expresions and strings and mathches them using the match function
 def printResults(infixes, strings):
@@ -202,7 +227,7 @@ def printResults(infixes, strings):
 
 userAnswer=True
 while userAnswer:
-    print("\n1: Print predefined comparisons\n2: Enter infix expressions and strings\n3: Read from file")
+    print("\n1: Print predefined comparisons\n2: Enter infix expressions and strings\n3: Read from file\n")
     userAnswer = input("Please enter a option: ")
     # If entry is one print out sample of infix & string comparisions
     if userAnswer == "1":
@@ -210,7 +235,7 @@ while userAnswer:
     elif userAnswer == "2":
         UserEntries()
     elif userAnswer == "3":
-        print("\nFile") 
+        FileResults()
     elif userAnswer == "4":
         print("\nGoodbye") 
         userAnswer = None
