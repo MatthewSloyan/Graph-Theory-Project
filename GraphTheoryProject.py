@@ -113,6 +113,14 @@ def compile(pofix):
             nfa1.accept.edge1, nfa1.accept.edge2 = nfa1.initial, accept
             # Push NFA to the stack.
             nfaStack.append(nfa(initial, accept))
+        # Test attempt of implementing the implicit concatenation, however doesn't seem to work
+        # elif (c!='|' or c!='.') and len(nfaStack) == 2:
+        #     # Pop Nfa's off the stack, nfa1 = first on stack
+        #     nfa2, nfa1 = nfaStack.pop(), nfaStack.pop()
+        #     # Connect first NFA's accept state to the second's initial.
+        #     nfa1.accept.edge1 = nfa2.initial
+        #     # Push NFA to the stack.
+        #     nfaStack.append(nfa(nfa1.initial, nfa2.accept))
         else:
             # Create new initial and accept states.
             initial, accept = state(), state()
@@ -196,6 +204,7 @@ def file_entry():
     # Allow the user to enter the file path and read file
     filePath = input("Please enter the file path including file name and extension for infixes: ")
     try:
+        # Open the file, read it line by line and split the lines at line breaks into a list
         fileInfixList = open(filePath, "r").read().splitlines()
     except FileNotFoundError:
         print("\nFile not found, please try again!")
@@ -211,7 +220,7 @@ def file_entry():
     # Print results from both files
     print_results(fileInfixList, fileStringlist)
 
-# Takes in a list of infix expresions and strings and mathches them using the match function
+# Takes in a list of infix expresions and strings and match them using the match() function
 def print_results(infixes, strings):
     print("\nRESULTS\n=======")
     for i in infixes:
@@ -219,7 +228,7 @@ def print_results(infixes, strings):
         for s in strings:
             print("Infix: %-17s String: %-17s Result: %-5s" % (i, s,  match(i, s)))
 
-# User menu 
+# User menu (UI) - Create a loop of the menu until the user exits the program
 userAnswer=True
 while userAnswer:
     print("\n1: Print predefined comparisons\n2: Enter infix expressions and strings\n3: Read from file\n4: Exit")
