@@ -15,10 +15,15 @@ To write a program in the Python that can build a non-deterministic finite autom
 # User Guide
 Below you’ll find a basic guide to the user interface, in the “How it works” section is a description of how this works in the code behind.
 
+Note: At the end of all options the user is given the ability to print to file. If 1 is entered, then a file name and extension must be entered which will write the file to the root directory of the folder. E.g. Test.txt. It also works with folders which can be added before the file name.
+
 When running the program, the user is presented with a list of menu options listed below. To select a menu option, enter the corresponding number for your choice. E.g. 1 = menu option 1. Also, all other invalid inputs are handled.
 * 1: Print predefined comparisons – This prints a list of pre-programmed infix expressions and strings.
+![]( https://github.com/MatthewSloyan/Graph-Theory-Project/blob/master/DrawingsAndOuput/PredefinedTest.JPG)
 * 2: Enter infix expressions and strings – This allows the user to enter their own list of infix expressions and strings. Each expression and string should be typed one after the other with a space between. E.g ca cat catt caat
+![]( https://github.com/MatthewSloyan/Graph-Theory-Project/blob/master/DrawingsAndOuput/UserInputTest.JPG)
 * 3: Read from file – This allows the user to choose a file to read infix expressions and strings from. The full file path must be entered to the location of the file along with the file name and extension. E.g. C:\Users\Matthew\Desktop\New folder\TestInfix.txt
+![]( https://github.com/MatthewSloyan/Graph-Theory-Project/blob/master/DrawingsAndOuput/FileTest.JPG)
 * 4: Exit - This allow the user to exit the program and return to the command line.
 
 # Project Plan
@@ -39,14 +44,14 @@ I initially began to look up related information online that could help me. I al
 #### Week of 11-03-19 to 18-03-19
 With the shunting algorithm implemented and working I moved onto working with creating NFA's from this postfix expression. This is achieved using Thompson's construction. It works by breaking the postfix expression down one character at a time into smaller NFA's, these NFA's are then combined to create and overall larger NFA which the string will be run through. To achieve this, I initially looked up information online that could help me and tried some things myself by drawing out each operator with sample inputs (Shown below). I also watched the videos and read the information posted on Learnonline. This helped me develop a function which creates an NFA using Thompson's construction. I couldn't test this properly however till the matching function was implemented as it would just return the memory address.
 
-![]( https://github.com/MatthewSloyan/Graph-Theory-Project/blob/master/Drawings/Concat%2C%20Kleene%20Star%20and%20Or%20operator%20sketch.jpg)
+![]( https://github.com/MatthewSloyan/Graph-Theory-Project/blob/master/DrawingsAndOuput/Concat%2C%20Kleene%20Star%20and%20Or%20operator%20sketch.jpg)
 
 To get the basic functionality working a matching function had to be implemented. To achieve this, I watched the videos on Learnonline, and developed a function which runs a string through the NFA adding each possible state every character could be in to a set by following the e edges. Once completed if the final set contains the accept state then the string is accepted otherwise it returns false.
 
 #### Week of 18-03-19 to 25-03-19
 With the main functionality completed, I wanted to add additional extras such as the ‘+’ and ‘?’ operators. To achieve this, I first began to see what they do, and found that the ‘?’ operator equals Zero or one. For example ab?c will match ‘abc’ and ‘ac’, but nothing else. Also, the + operator means One or more, so ab+c would match ‘abc’ and abbc but not ‘ac’. Lastly, they both have the same priority as the Kleene star and | operator which I found from research. With this in mind I began to draw them out to visualise how they work in my head (Drawings can be found in the "Drawings" folder or as shown below). This really gave me a great start, so I wasn't coding blind.
 
-![]( https://github.com/MatthewSloyan/Graph-Theory-Project/blob/master/Drawings/Plus%20and%20Question%20mark%20operator%20sketch.jpg)
+![]( https://github.com/MatthewSloyan/Graph-Theory-Project/blob/master/DrawingsAndOuput/Plus%20and%20Question%20mark%20operator%20sketch.jpg)
 
 (Extra) I then began to implement the ‘?’ operator which works like the Kleene star however instead it doesn’t have a e arrow connecting back on itself from the NFA accept state to the initial state. Drawing these out really helped me visualise what was going on and how to implement it. More information of how it works can be found in the “How it works” section.
 
@@ -63,8 +68,12 @@ Even though the main functionality was completed the research and work wasn’t 
 
 (Extra) After I implemented the ability to read infixes and strings from files. From what I learned from the user input and how strings can be added easily into lists, I researched how file opening and reading works. I found it requires no external packages and can be opened with a simple `open(filePath, "r")`. However, when adding this to the list like in the user entry function it would include the \n character which was a problem. To solve this, I researched a way to strip characters from a string and found the rstrip method here “https://www.w3schools.com/python/ref_string_rstrip.asp” and how to user it. It strips all characters to the right of a string. I then needed to figure out how to loop through the document and remove each line where I found a similar implementation here https://qiita.com/visualskyrim/items/1922429a07ca5f974467 which I modified it and improved  to be this `[line.rstrip() for line in open(filePath, "r")]`. However I noticed from testing it would leave an empty string from the end of the file, so to fix this I instead swapped it to `open(filePath, "r").read().splitlines()` which handles this. 
 
+(Extra) I felt it could become even more useable, so I added the ability to print the output of all menu options to a file. I used what I had learnt from printing a formatted string and reading/writing to files to implement this. The output file could be then used to read from in another program for analytics as it contains just the infix, string and result.
+
+**Notes:** I also tried to implement the ability to implicitly concatenate the inputs, so for example if ‘ab’ was entered it would be the equivalent to ‘a.b’. I drew out some ideas of how this could possible work visually and I tried a test to check if there's two NFA’s in the stack and if they're not an ‘.’ or ‘|’, then concatenate. However, this didn’t seem to work and caused errors. Another idea I had idea I had was to add in a '.' operator in the infix_conversion function if two characters came together that wasn't followed by a '.'. This seemed like a more of a plausible solution but there would be a lot of variables to consider. So for now I will leave it as is and hopefully revisit this problem in the future.
+
 # How it works
-### Infix to postfix conversion using Shunting Yard Algorithm (infixConversion function)
+### Infix to postfix conversion using Shunting Yard Algorithm (infix_conversion function)
 * It starts by looping through the passed in infix string. 
 * If the first character is a ‘(‘ add to the stack signifying the start of a group. 
 * If a ‘)’ is encountered add what’s on the stack until ‘(‘ is encountered and then remove the ‘(‘. 
@@ -89,7 +98,7 @@ Pop one NFA’s from the stack and create a new initial and accept state. Set ed
 This function converts an infix regular expression, coverts it to postfix and checks if the regular expression matches the given string of text.
 First get the postfix expression by calling the the infixConversion() function described in detail above, which returns a postfix expression. Then compile the postfix expression into a non-deterministic finite automaton to compare the string with using the compile() function which is described above too. Create a new set for both the current set of states and the set of next states. Sets work like lists in other programming languages however their values must be unique. E.g. you can’t add the same value to a set twice. Using the union operator add all the possible states you could travel to by following the e arrows to the current set. This is implemented using the followEs function which is described below. For each character in the string iterate through the current set to check if the set contains the character, if so, add the next states you could travel to using this edge. At the end if the current set contains the accept state then it returns true, if not then returns false and the string doesn’t match the NFA.
 
-### Traverse through all possible e edges (FollowEs function)
+### Traverse through all possible e edges (followes function)
 Helper function, which returns set of states that can be reached from the state following e arrows. If it encounters an e arrow (state.label is None) it will check both edges and follow them if possible. If it can follow it uses recursion and starts the process again from that current edge until it can follow no more edges.
 
 ### UI Functions
@@ -99,8 +108,10 @@ Prints a predefined list of infix expressions and strings already in the program
 This function takes in any number of inputs for both infixes and strings. It splits the line and adds each input delimited by a space to a list using the split() method. Both entries are then passed into the print_results() function for comparison.
 #### file_entry()
 This function allows the user to input the path to a file for infix expressions and strings. If the file is found it reads it line by line stripping out the \n character and adds to a list, otherwise it returns a FileNotFoundError and returns.
-#### print_results() 
-Takes in list of infix expressions and strings looping through them and calling the match function which returns either true or false. It also prints out the results in a formatted table for readability.
+#### print_results(infixes, strings) 
+Takes in list of infix expressions and strings looping through them and calling the match function which returns either true or false. It also prints out the results in a formatted table for readability. After it asks the user if they’d like to print to file, and depending on the option selected print_results_file can be called.
+#### print_results_file(infixes, strings)
+It first asks the user for a file name/path and extension, then using the list of passed in infix expressions and strings loop through them and print to file.
 
 # References
 #### Start of Semester to 04-03-19
@@ -125,4 +136,5 @@ Takes in list of infix expressions and strings looping through them and calling 
 * https://docs.python.org/3/tutorial/inputoutput.html
 * https://www.w3schools.com/python/ref_string_rstrip.asp
 * https://qiita.com/visualskyrim/items/1922429a07ca5f974467
+* https://www.w3schools.com/python/ref_string_splitlines.asp
 
