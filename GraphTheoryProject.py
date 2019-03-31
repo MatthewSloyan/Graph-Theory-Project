@@ -5,7 +5,8 @@ def infix_conversion(infix):
     """Shunting Yard Algorithm implementation for converting infix 
     regular expressions to postfix."""
     
-    # declare the special operands and their priority. This will be updated down the line to add +- etc.
+    # declare the special operands and their priority.
+    # * = 0 or more, + = 1 or more, ? = 0 or 1, . = concatenate, | = one or the other
     specials = {'*': 50, '+': 50, '?': 50, '.': 40, '|': 30}
 
     pofix, stack = "", ""
@@ -60,6 +61,11 @@ def compile(pofix):
     #initalise the stack
     nfaStack = []
 
+    # I made an attempt in implementing the implicit concatenation, however it didn't work so I removed test
+    # My itital thoughts were that you could check if there's two nfa in the stack and if they're not a . or |, then concatenate.
+    # Another idea I had was to add in a '.' operator in the infix_conversion function if two characters came together that wasn't followed by a '.'
+    # These ideas are documented further in the last week of my Research & Development section (README).
+
     # interate through each character in the postfix string
     for c in pofix:
         if c == '.':
@@ -113,14 +119,6 @@ def compile(pofix):
             nfa1.accept.edge1, nfa1.accept.edge2 = nfa1.initial, accept
             # Push NFA to the stack.
             nfaStack.append(nfa(initial, accept))
-        # Test attempt of implementing the implicit concatenation, however doesn't seem to work
-        # elif (c!='|' or c!='.') and len(nfaStack) == 2:
-        #     # Pop Nfa's off the stack, nfa1 = first on stack
-        #     nfa2, nfa1 = nfaStack.pop(), nfaStack.pop()
-        #     # Connect first NFA's accept state to the second's initial.
-        #     nfa1.accept.edge1 = nfa2.initial
-        #     # Push NFA to the stack.
-        #     nfaStack.append(nfa(nfa1.initial, nfa2.accept))
         else:
             # Create new initial and accept states.
             initial, accept = state(), state()
@@ -195,7 +193,7 @@ def print_predefined():
 # Compare a list of user regular expressions infix notation to strings entered.
 def user_entry():
     # Take in user input and split each string at a space and add to a list
-    infixEntry = list(input("Please enter a list or single infix expression: ").split()) 
+    infixEntry = list(input("\nPlease enter a list or single infix expression: ").split()) 
     stringEntry = list(input("Please enter a list or single string: ").split()) 
     print_results(infixEntry, stringEntry)
 
@@ -222,11 +220,35 @@ def file_entry():
 
 # Takes in a list of infix expresions and strings and match them using the match() function
 def print_results(infixes, strings):
+    # Print results to screen
     print("\nRESULTS\n=======")
     for i in infixes:
         print()
         for s in strings:
             print("Infix: %-17s String: %-17s Result: %-5s" % (i, s,  match(i, s)))
+
+    # Print results to file
+    userEntry = input("\nWould you like to print results to file Yes(1) No(2): ")
+    if userEntry == "1":
+        print_results_file(infixes, strings)
+    elif userEntry == "2":
+        return
+    else:
+        print("\nNot a valid choice, please try again")
+
+# For resusabilty function that takes a file name and extension and prints to file
+def print_results_file(infixes, strings):
+    filePath = input("\nPlease enter the file name and extension you would like to save: ")
+    try:
+        f= open(filePath,"w")
+        for i in infixes:
+            for s in strings:
+                # Formatted string that prints each line to file
+                f.write("{} {} {}".format("%s" % i, "%s" % s, "%s\n" % str(match(i, s))))
+        f.close
+        print("\n" + filePath + " written successfully.")
+    except:
+        print("An error occurred, please try again")
 
 # User menu (UI) - Create a loop of the menu until the user exits the program
 userAnswer=True
@@ -244,4 +266,4 @@ while userAnswer:
         print("\nGoodbye") 
         userAnswer = None
     else:
-        print("\nNot Valid Choice Try again")
+        print("\nNot a valid choice, please try again")
